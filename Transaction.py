@@ -25,6 +25,15 @@ class Transaction:
         self.signature = signature
 
     def payload(self):
+        """
+        Returns the payload of the transaction
+        """
         jsonRepresentation = copy.deepcopy(self.toJson())
         jsonRepresentation['signature'] = ''
         return jsonRepresentation
+
+    def equals(self, transaction):
+        """
+        Checks if two transactions are equal
+        """
+        return self.id == transaction.id
