@@ -21,4 +21,4 @@ class Transaction:
         return self.__dict__
 
     def sign(self, signature):
-        self.signature = signature
+        self.signature = signature,

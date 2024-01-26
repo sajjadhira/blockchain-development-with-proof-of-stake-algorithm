@@ -19,3 +19,22 @@ class Wallet:
         signatureSchemeObject = PKCS1_v1_5.new(self.keyPair)
         signature = signatureSchemeObject.sign(dataHash)
         return signature.hex()
+
+    @staticmethod
+    def signatureValid(data, signature, publicKeyString):
+        """
+        Verifies the signature of the data using the public key
+        """
+        signature = bytes.fromhex(signature)
+        dataHash = BlockchainUtils.hash(data)
+        publicKey = RSA.importKey(publicKeyString)
+        signatureSchemeObject = PKCS1_v1_5.new(publicKey)
+        singnatureValid = signatureSchemeObject.verify(dataHash, signature)
+        return singnatureValid
+
+    def publicKeyString(self):
+        """
+        Returns the public key as a string
+        """
+        publicKeyString = self.keyPair.publickey().exportKey('PEM').decode('utf-8')
+        return publicKeyString

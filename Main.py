@@ -10,5 +10,9 @@ if __name__ == '__main__':
     transaction_json = transaction.toJson()
     wallet = Wallet()
     signature = wallet.sign(transaction_json)
-    transaction.sign(signature)
-    print(transaction.toJson())
+    # transaction.sign(signature)
+
+    singnatureValid = Wallet.signatureValid(
+        transaction_json, signature, wallet.publicKeyString())
+
+    print(singnatureValid)
