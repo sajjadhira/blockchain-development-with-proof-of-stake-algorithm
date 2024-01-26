@@ -6,13 +6,18 @@ if __name__ == '__main__':
     recipient = 'recipient'
     amount = 100
     type = 'TRANSFER'
-    transaction = Transaction(sender, recipient, amount, type)
-    transaction_json = transaction.toJson()
+
     wallet = Wallet()
-    signature = wallet.sign(transaction_json)
-    # transaction.sign(signature)
 
-    singnatureValid = Wallet.signatureValid(
-        transaction_json, signature, wallet.publicKeyString())
+    fruadulentWallet = Wallet()
 
-    print(singnatureValid)
+    transaction = wallet.createTransaction(recipient, amount, type)
+
+    signatureInValid = Wallet.signatureValid(
+        transaction.payload(), transaction.signature, fruadulentWallet.publicKeyString())
+
+    signatureValid = Wallet.signatureValid(
+        transaction.payload(), transaction.signature, wallet.publicKeyString())
+
+    print('Signature Valid: ', signatureValid)
+    print('Signature InValid: ', signatureInValid)
