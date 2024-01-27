@@ -14,6 +14,13 @@ if __name__ == '__main__':
 
     alice = Wallet()
     bob = Wallet()
+    exchange = Wallet()
+
+    exchangeTransaction = exchange.createTransaction(
+        alice.publicKeyString(), 100, "EXCHANGE")
+
+    if not pool.existingTransaction(exchangeTransaction):
+        pool.addTransaction(exchangeTransaction)
 
     #  alice wants to send 5 token to bob
 

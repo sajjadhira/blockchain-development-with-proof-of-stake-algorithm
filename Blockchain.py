@@ -65,6 +65,9 @@ class Blockchain:
         """
         Checks if the transaction is covered
         """
+        if transaction.type == "REWARD" or transaction.type == "EXCHANGE":
+            return True
+
         senderBalance = self.accountModel.getBalance(
             transaction.senderPublicKey)
         return senderBalance >= transaction.amount
