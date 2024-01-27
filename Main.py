@@ -3,6 +3,7 @@ from Wallet import Wallet
 from TransactionPool import TransactionPool
 from Block import Block
 import pprint
+from Blockchain import Blockchain
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -32,5 +33,8 @@ if __name__ == '__main__':
     singnatureInvalid = wallet.signatureValid(
         block.payload(), block.signature, fruadulentWallet.publicKeyString())
 
-    print(signatureValid)
-    print(singnatureInvalid)
+    blockchain = Blockchain()
+
+    blockchain.addBlock(block)
+
+    pprint.pprint(blockchain.toJson())
