@@ -1,3 +1,7 @@
+from Block import Block
+from BlockchainUtils import BlockchainUtils
+
+
 class Blockchain:
     """
     Blockchain class : Blockchain is a list of blocks
@@ -7,7 +11,7 @@ class Blockchain:
         """
         Constructor
         """
-        self.blocks = []
+        self.blocks = [Block.genesis()]
 
     def addBlock(self, block):
         """
@@ -26,3 +30,19 @@ class Blockchain:
 
         data["blocks"] = jsonBlocks
         return data
+
+    def blockCountValid(self, block):
+        """
+        Checks if the block count is valid
+        """
+
+        return self.blocks[-1].blockCount == block.blockCount - 1
+
+    def lastBlockHashValid(self, block):
+        """
+        Checks if the last block hash is valid
+        """
+        lastBlokchainBlockHash = BlockchainUtils.hash(
+            self.blocks[-1].payload()).hexdigest()
+
+        return lastBlokchainBlockHash == block.lastHash

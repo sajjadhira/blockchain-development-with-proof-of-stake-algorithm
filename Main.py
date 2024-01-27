@@ -4,6 +4,7 @@ from TransactionPool import TransactionPool
 from Block import Block
 import pprint
 from Blockchain import Blockchain
+from BlockchainUtils import BlockchainUtils
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -22,19 +23,20 @@ if __name__ == '__main__':
     if not pool.existingTransaction(transaction):
         pool.addTransaction(transaction)
 
-    if not pool.existingTransaction(transaction):
-        pool.addTransaction(transaction)
-
-    block = wallet.createBlock(pool.transactions, 'lastHash', 'forger', 1)
-
-    signatureValid = wallet.signatureValid(
-        block.payload(), block.signature, wallet.publicKeyString())
-
-    singnatureInvalid = wallet.signatureValid(
-        block.payload(), block.signature, fruadulentWallet.publicKeyString())
-
     blockchain = Blockchain()
+    lastHash = BlockchainUtils.hash(
+        blockchain.blocks[-1].payload()).hexdigest()
+    blockCount = blockchain.blocks[-1].blockCount + 1
 
-    blockchain.addBlock(block)
+    block = wallet.createBlock(
+        pool.transactions, lastHash, wallet.publicKeyString(), blockCount)
+
+    if not blockchain.lastBlockHashValid(block):
+        print('Invalid block hash')
+
+    elif not blockchain.blockCountValid(block):
+        print('Invalid block count')
+    else:
+        blockchain.addBlock(block)
 
     pprint.pprint(blockchain.toJson())
