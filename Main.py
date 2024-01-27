@@ -9,9 +9,20 @@ from AccountModel import AccountModel
 
 if __name__ == '__main__':
 
-    wallet = Wallet()
-    accountModel = AccountModel()
-    accountModel.updateBalance(wallet.publicKeyString(), 10)
-    accountModel.updateBalance(wallet.publicKeyString(), -5)
+    blockchain = Blockchain()
+    pool = TransactionPool()
 
-    print(accountModel.balances)
+    alice = Wallet()
+    bob = Wallet()
+
+    #  alice wants to send 5 token to bob
+
+    transaction = alice.createTransaction(bob.publicKeyString(), 5, "TRANSFER")
+
+    if not pool.existingTransaction(transaction):
+        pool.addTransaction(transaction)
+
+    coveredTransactions = blockchain.getCoveredTransactionSet(
+        pool.transactions)
+
+    pprint.pprint(coveredTransactions)
