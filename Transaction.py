@@ -3,30 +3,35 @@ import time
 import copy
 
 
-class Transaction:
-    """
-    Transaction class: is used to create a transaction object
-    """
+class Transaction():
 
-    def __init__(self, senderPublicKey, recipientPublicKey, amount, type):
+    def __init__(self, senderPublicKey, receiverPublicKey, amount, type):
+        """
+        Constructor for the Transaction class
+        """
         self.senderPublicKey = senderPublicKey
-        self.recipientPublicKey = recipientPublicKey
+        self.receiverPublicKey = receiverPublicKey
         self.amount = amount
         self.type = type
-        self.id = uuid.uuid1().hex
+        self.id = (uuid.uuid1()).hex
         self.timestamp = time.time()
         self.signature = ''
 
-    # method to convert the transaction object to a dictionary
     def toJson(self):
+        """
+        Returns a json representation of the transaction
+        """
         return self.__dict__
 
     def sign(self, signature):
+        """
+        Signs the transaction with the given signature
+        """
         self.signature = signature
 
     def payload(self):
         """
-        Returns the payload of the transaction
+        Returns a json representation of the transaction without the signature
         """
         jsonRepresentation = copy.deepcopy(self.toJson())
         jsonRepresentation['signature'] = ''
@@ -34,6 +39,9 @@ class Transaction:
 
     def equals(self, transaction):
         """
-        Checks if two transactions are equal
+        Returns true if the transaction is the same as the given transaction
         """
-        return self.id == transaction.id
+        if self.id == transaction.id:
+            return True
+        else:
+            return False

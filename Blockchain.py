@@ -19,6 +19,7 @@ class Blockchain:
         """
         Adds a block to the blockchain
         """
+        self.executeTransactions(block.transactions)
         self.blocks.append(block)
 
     def toJson(self):
@@ -71,3 +72,20 @@ class Blockchain:
         senderBalance = self.accountModel.getBalance(
             transaction.senderPublicKey)
         return senderBalance >= transaction.amount
+
+    def executeTransactions(self, transactions):
+        """
+        Executes a list of transactions
+        """
+        for transaction in transactions:
+            self.executeTransaction(transaction)
+
+    def executeTransaction(self, transaction):
+        """
+        Executes a transaction
+        """
+        sender = transaction.senderPublicKey
+        receiver = transaction.receiverPublicKey
+        amount = transaction.amount
+        self.accountModel.updateBalance(sender, -amount)
+        self.accountModel.updateBalance(receiver, amount)

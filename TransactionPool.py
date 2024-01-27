@@ -8,7 +8,7 @@ class TransactionPool:
         """
         self.transactions.append(transaction)
 
-    def existingTransaction(self, transaction):
+    def transactionExists(self, transaction):
         """
         Checks if a transaction exists in the transaction pool
         """
