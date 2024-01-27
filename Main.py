@@ -2,6 +2,7 @@ from Transaction import Transaction
 from Wallet import Wallet
 from TransactionPool import TransactionPool
 from Block import Block
+import pprint
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -23,6 +24,13 @@ if __name__ == '__main__':
     if not pool.existingTransaction(transaction):
         pool.addTransaction(transaction)
 
-    block = Block(pool.transactions, 'lastHash', 'forger', 1)
+    block = wallet.createBlock(pool.transactions, 'lastHash', 'forger', 1)
 
-    print(block.toJson())
+    signatureValid = wallet.signatureValid(
+        block.payload(), block.signature, wallet.publicKeyString())
+
+    singnatureInvalid = wallet.signatureValid(
+        block.payload(), block.signature, fruadulentWallet.publicKeyString())
+
+    print(signatureValid)
+    print(singnatureInvalid)
