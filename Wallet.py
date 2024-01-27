@@ -51,11 +51,12 @@ class Wallet:
         transaction.sign(signature)
         return transaction
 
-    def createBlock(self, transactions, lastHash, forger, blockCount):
+    def createBlock(self, transactions, lastHash, blockCount):
         """
         Creates a block object
         """
-        block = Block(transactions, lastHash, forger, blockCount)
+        block = Block(transactions, lastHash,
+                      self.publicKeyString(), blockCount)
         signature = self.sign(block.payload())
         block.sign(signature)
         return block
