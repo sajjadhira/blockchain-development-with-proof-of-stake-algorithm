@@ -22,7 +22,9 @@ class PeerDiscoveryHandler:
         Send status message to all peers
         """
         while True:
-            print("status")
+            print("Current Connections")
+            for peer in self.socketCommunication.peers:
+                print(peer.ip + ":" + str(peer.port))
             time.sleep(10)
 
     def discovery(self):
@@ -30,7 +32,8 @@ class PeerDiscoveryHandler:
         Send discovery message to all peers
         """
         while True:
-            print("discovery")
+            handshakeMessage = self.handleHandshake()
+            self.socketCommunication.broadcast(handshakeMessage)
             time.sleep(10)
 
     def handshake(self, connected_node):
@@ -51,3 +54,24 @@ class PeerDiscoveryHandler:
         message = Message(ownConnector, messageType, data)
         encodedMessage = BlockchainUtils.encode(message)
         return encodedMessage
+
+    def handleMessage(self, message):
+        peerSocketConnector = message.senderConnector
+        peersPeerList = message.data
+        newPeer = True
+        for peer in self.socketCommunication.peers:
+            if peer.equals(peerSocketConnector):
+                newPeer = False
+
+        if newPeer:
+            self.socketCommunication.peers.append(peerSocketConnector)
+
+        for peersPeer in peersPeerList:
+            peerKnown = False
+            for peer in self.socketCommunication.peers:
+                if peer.equals(peersPeer):
+                    peerKnown = True
+            if not peerKnown and not peersPeer.equals(self.socketCommunication.socketConnector):
+                self.socketCommunication.peers.append(peersPeer)
+                self.socketCommunication.connect_with_node(
+                    peersPeer.ip, peersPeer.port)
