@@ -22,7 +22,8 @@ class PeerDiscoveryHandler:
         Send status message to all peers
         """
         while True:
-            print("Current Connections")
+            lengOfPeers = len(self.socketCommunication.peers)
+            print(f"Current Connections {lengOfPeers} :")
             for peer in self.socketCommunication.peers:
                 print(peer.ip + ":" + str(peer.port))
             time.sleep(10)
