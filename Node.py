@@ -2,6 +2,7 @@ from Blockchain import Blockchain
 from TransactionPool import TransactionPool
 from Wallet import Wallet
 from SocketCommunication import SocketCommunication
+from NodeAPI import NodeAPI
 
 
 class Node:
@@ -17,3 +18,7 @@ class Node:
     def startP2P(self):
         self.p2p = SocketCommunication(self.ip, self.port)
         self.p2p.startSocketCommunication()
+
+    def startAPI(self):
+        self.api = NodeAPI()
+        self.api.start()
