@@ -1,5 +1,7 @@
 import threading
 import time
+from Message import Message
+from BlockchainUtils import BlockchainUtils
 
 
 class PeerDiscoveryHandler:
@@ -35,4 +37,17 @@ class PeerDiscoveryHandler:
         """
         Send handshake message to a peer
         """
-        self.socketCommunication.send(connected_node, "handshake...")
+        handshakeMessage = self.handleHandshake()
+        self.socketCommunication.send(connected_node, handshakeMessage)
+
+    def handleHandshake(self):
+        """
+        Handle a handshake message
+        """
+        ownConnector = self.socketCommunication.socketConnector
+        ownPeers = self.socketCommunication.peers
+        data = ownPeers
+        messageType = 'DISCOVERY'
+        message = Message(ownConnector, messageType, data)
+        encodedMessage = BlockchainUtils.encode(message)
+        return encodedMessage
