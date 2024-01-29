@@ -35,7 +35,8 @@ class Node():
         signatureValid = Wallet.signatureValid(
             data, signature, signerPublicKey)
         transactionExists = self.transactionPool.transactionExists(transaction)
-        if not transactionExists and signatureValid:
+        transactionInBlock = self.blockchain.transactionExists(transaction)
+        if not transactionExists and not transactionInBlock and signatureValid:
             self.transactionPool.addTransaction(transaction)
             message = Message(self.p2p.socketConnector,
                               'TRANSACTION', transaction)
@@ -49,5 +50,12 @@ class Node():
         forger = self.blockchain.nextForger()
         if forger == self.wallet.publicKeyString():
             print('I am the next forger')
+            block = self.blockchain.createBlock(
+                self.transactionPool.transactions, self.wallet)
+            self.transactionPool.removeFromPool(block.transactions)
+            message = Message(self.p2p.socketConnector, 'BLOCK', block)
+            encodedMessage = BlockchainUtils.encode(message)
+            self.p2p.broadcast(encodedMessage)
+
         else:
             print('I am not the next forger')
