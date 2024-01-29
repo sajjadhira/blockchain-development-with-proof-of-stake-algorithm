@@ -5,6 +5,7 @@ from SocketCommunication import SocketCommunication
 from NodeAPI import NodeAPI
 from Message import Message
 from BlockchainUtils import BlockchainUtils
+import copy
 
 
 class Node():
@@ -58,12 +59,38 @@ class Node():
         signatureValid = Wallet.signatureValid(
             blockHash, signature, forger)
 
-        if blockCountValid and lastBlockHashValid and forgerValid and transactionValid and signatureValid:
+        if not blockCountValid:
+            self.requestChain()
+
+        if lastBlockHashValid and forgerValid and transactionValid and signatureValid:
             self.blockchain.addBlock(block)
             self.transactionPool.removeFromPool(block.transactions)
             message = Message(self.p2p.socketConnector, 'BLOCK', block)
             encodedMessage = BlockchainUtils.encode(message)
             self.p2p.broadcast(encodedMessage)
+
+    def requestChain(self):
+        message = Message(self.p2p.socketConnector, 'BLOCKCHAINREQUEST', None)
+        encodedMessage = BlockchainUtils.encode(message)
+        self.p2p.broadcast(encodedMessage)
+
+    def handleBlockchainRequest(self, requestedNode):
+        message = Message(self.p2p.socketConnector,
+                          'BLOCKCHAIN', self.blockchain)
+        encodedMessage = BlockchainUtils.encode(message)
+        self.p2p.send(requestedNode, encodedMessage)
+
+    def handleBlockchain(self, blockchain):
+        localBlockchainCopy = copy.deepcopy(self.blockchain)
+        localBlockCount = len(localBlockchainCopy.blocks)
+        receivedChainBlockCount = len(blockchain.blocks)
+        if localBlockCount < receivedChainBlockCount:
+            self.blockchain = blockchain
+            for blockNumber, block in enumerate(blockchain.blocks):
+                if blockNumber >= localBlockCount:
+                    localBlockchainCopy.addBlock(block)
+                    self.transactionPool.removeFromPool(block.transactions)
+            self.blockchain = localBlockchainCopy
 
     def forge(self):
         forger = self.blockchain.nextForger()
