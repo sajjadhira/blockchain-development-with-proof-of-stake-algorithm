@@ -13,6 +13,12 @@ class Wallet:
     def __init__(self):
         self.keyPair = RSA.generate(2048)
 
+    def fromKey(self, file):
+        key = ''
+        with open(file, 'r') as keyfile:
+            key = RSA.importKey(keyfile.read())
+        self.keyPair = key
+
     def sign(self, data):
         """
         Signs data using the private key

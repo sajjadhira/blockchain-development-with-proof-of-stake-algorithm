@@ -10,6 +10,11 @@ class ProofOfStake:
         Proof of Stake initializer.
         """
         self.stakers = {}
+        self.setGenesosoNodeStake()
+
+    def setGenesosoNodeStake(self):
+        genesisPublicKey = open('keys/genesisPublicKey.pem', 'r').read()
+        self.stakers[genesisPublicKey] = 1
 
     def update(self, publicKeyString, stake):
         if publicKeyString in self.stakers.keys():

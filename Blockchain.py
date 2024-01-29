@@ -86,11 +86,19 @@ class Blockchain:
         """
         Executes a transaction
         """
-        sender = transaction.senderPublicKey
-        receiver = transaction.receiverPublicKey
-        amount = transaction.amount
-        self.accountModel.updateBalance(sender, -amount)
-        self.accountModel.updateBalance(receiver, amount)
+        if transaction.type == "STAKE":
+            sender = transaction.senderPublicKey
+            receiver = transaction.receiverPublicKey
+
+            if sender == receiver:
+                self.pos.update(sender, transaction.amount)
+                self.accountModel.updateBalance(sender, -transaction.amount)
+            else:
+                sender = transaction.senderPublicKey
+                receiver = transaction.receiverPublicKey
+                amount = transaction.amount
+                self.accountModel.updateBalance(sender, -amount)
+                self.accountModel.updateBalance(receiver, amount)
 
     def nextForger(self):
         """
