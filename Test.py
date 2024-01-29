@@ -11,11 +11,13 @@ def getRandomString(length):
 
 if __name__ == '__main__':
     pos = ProofOfStake()
-    pos.update("bob", 10)
+    pos.update("bob", 75)
     pos.update("alice", 100)
+    pos.update("jack", 50)
 
     bobWins = 0
     aliceWins = 0
+    jackWins = 0
 
     for i in range(100):
         forger = pos.forger(getRandomString(i))
@@ -23,5 +25,8 @@ if __name__ == '__main__':
             bobWins += 1
         elif forger == "alice":
             aliceWins += 1
+        elif forger == "jack":
+            jackWins += 1
     print("Bob wins: " + str(bobWins) + " times \n\n")
     print("Alice wins: " + str(aliceWins) + " times \n\n")
+    print("Jack wins: " + str(jackWins) + " times \n\n")

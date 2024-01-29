@@ -1,6 +1,6 @@
 
 
-class TransactionPool():
+class TransactionPool:
 
     def __init__(self):
         self.transactions = []
@@ -24,3 +24,6 @@ class TransactionPool():
             if insert == True:
                 newPoolTransactions.append(poolTransaction)
         self.transactions = newPoolTransactions
+
+    def forgerRequired(self):
+        return len(self.transactions) >= 1
